@@ -1,0 +1,52 @@
+html
+    head
+        title Deepella: Absence Management
+        link(type="text/css", rel="stylesheet", href="lib/bootstrap-3.3.7/css/bootstrap.min.css")
+        link(type="text/css", rel="stylesheet", href="lib/bootstrap-year-calendar-1.1.0/css/bootstrap-year-calendar.min.css")
+        link(type="text/css", rel="stylesheet", href="lib/font-awesome-4.7.0/css/font-awesome.min.css")
+        link(type="text/css", rel="stylesheet", href="css/deepella.css")
+        link(type="text/css", rel="stylesheet", href="css/calendar.css")
+        script(type="text/javascript", src="lib/jquery-3.2.1/jquery-3.2.1.min.js")
+        script(type="text/javascript", src="lib/bootstrap-3.3.7/js/bootstrap.min.js")
+        script(type="text/javascript", src="lib/bootstrap-year-calendar-1.1.0/js/bootstrap-year-calendar.min.js")
+        script(type="text/javascript", src="lib/bootbox-4.4.0/bootbox.min.js")
+        script(type="text/javascript", src="lib/moment-2.18.1/moment-with-locales.min.js")
+        script(type="text/javascript", src="lib/js.cookie-2.1.4/js.cookie-2.1.4.min.js")
+        script(type="text/javascript", src="js/settings.js")
+        script(type="text/javascript", src="js/common.js")
+        script(type="text/javascript", src="js/auth.js")
+        script(type="text/javascript", src="js/calendar.js")
+    body
+        #calendar
+        hr
+        #legend
+        hr
+        code#user-username -
+        | &nbsp;
+        span#user-name 无
+        | ，计算周期：
+        code#calc-start -
+        | &nbsp;
+        | 至
+        | &nbsp;
+        code#calc-end -
+        | &nbsp;
+        | ，共请假
+        | &nbsp;
+        code#calc-day-off
+        | &nbsp;
+        | 天，共加班
+        | &nbsp;
+        code#calc-overtime
+        | &nbsp;
+        | 天。
+        hr
+        .form-inline
+            select#users.form-control
+            | &nbsp;
+            button(onclick="user_switch();").btn.btn-primary 切换员工
+            | &nbsp;
+            button(onclick="user_create();").btn.btn-primary 创建新员工
+            | &nbsp;
+            button(onclick="user_delete();").btn.btn-danger 删除此员工
+
