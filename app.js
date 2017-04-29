@@ -5,6 +5,7 @@ const moment = require('moment');
 const console = require('console');
 const body_parser = require('body-parser');
 const sequelize = require('sequelize');
+const otpauth = require('otpauth');
 
 // Shared Functions
 function log(msg, color) {
@@ -62,6 +63,15 @@ var Event = db.define('event', {
 });
 
 // Views
+app.get('/api/auth/', function (req, res) {
+    var totp = new otpauth.TOTP({
+        'issuer': 'Deepera Co., Ltd.',
+        'label': 'deepella@deepera.com',
+        'secret': otpauth.Secret.fromB32('ELLACHANBFF')
+    });
+    res.send({status: req.query.p === totp.generate()});
+});
+
 app.get('/api/users/', function (req, res) {
     User.findAll().then(function (users) {
         res.send(users);

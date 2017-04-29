@@ -1,0 +1,18 @@
+.form-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-center input {
+    color: transparent;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed #83A4C5;
+    outline: none;
+    padding: 3px;
+    text-align: center;
+    text-shadow: 0 0 black;
+    font-family: Consolas, monospace;
+}

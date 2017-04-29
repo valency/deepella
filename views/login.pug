@@ -1,8 +1,12 @@
 html
     head
         title Deepella: Absence Management
+        link(type="text/css", rel="stylesheet", href="css/login.css")
         script(type="text/javascript", src="lib/jquery-3.2.1/jquery-3.2.1.min.js")
         script(type="text/javascript", src="lib/js.cookie-2.1.4/js.cookie-2.1.4.min.js")
+        script(type="text/javascript", src="js/settings.js")
+        script(type="text/javascript", src="js/common.js")
         script(type="text/javascript", src="js/login.js")
     body
-        | let's log in!
+        .form-center
+            input#password
