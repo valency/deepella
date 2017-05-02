@@ -713,7 +713,7 @@
 				contextMenu.css('top', elt.offset().top + 25 + 'px');
 				contextMenu.show();
 				
-				$(window).one('mouseup', function() {
+				$(window).click(function() {
 					contextMenu.hide();
 				});
 			}
