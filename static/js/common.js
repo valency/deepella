@@ -220,3 +220,7 @@ function get_key_by_value(dict, value) {
     }
 }
 
+function init_widget() {
+    $(".cssload-container").remove();
+    $(".container").removeClass("hidden");
+}

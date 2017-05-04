@@ -5,6 +5,7 @@ html
         link(type="text/css", rel="stylesheet", href="lib/bootstrap-year-calendar-1.1.0/css/bootstrap-year-calendar.min.css")
         link(type="text/css", rel="stylesheet", href="lib/font-awesome-4.7.0/css/font-awesome.min.css")
         link(type="text/css", rel="stylesheet", href="css/deepella.css")
+        link(type="text/css", rel="stylesheet", href="css/index.css")
         link(type="text/css", rel="stylesheet", href="css/calendar.css")
         script(type="text/javascript", src="lib/jquery-3.2.1/jquery-3.2.1.min.js")
         script(type="text/javascript", src="lib/bootstrap-3.3.7/js/bootstrap.min.js")
@@ -17,36 +18,41 @@ html
         script(type="text/javascript", src="js/auth.js")
         script(type="text/javascript", src="js/calendar.js")
     body
-        #calendar
-        hr
-        #legend
-        hr
-        code#user-username -
-        | &nbsp;
-        span#user-name 无
-        | ，计算周期：
-        code#calc-start -
-        | &nbsp;
-        | 至
-        | &nbsp;
-        code#calc-end -
-        | &nbsp;
-        | ，共请假
-        | &nbsp;
-        code#calc-day-off
-        | &nbsp;
-        | 天，共加班
-        | &nbsp;
-        code#calc-overtime
-        | &nbsp;
-        | 天。
-        hr
-        .form-inline
-            select#users.form-control
-            | &nbsp;
-            button(onclick="user_switch();").btn.btn-primary 切换员工
-            | &nbsp;
-            button(onclick="user_create();").btn.btn-primary 创建新员工
-            | &nbsp;
-            button(onclick="user_delete();").btn.btn-danger 删除此员工
+        .cssload-container
+            .cssload-whirlpool
+        .container.hidden
+            .row
+                .col-md-12
+                    #calendar
+                    hr
+                    #legend
+                    hr
+                    code#user-username -
+                    | &nbsp;
+                    span#user-name 无
+                    | ，计算周期：
+                    code#calc-start -
+                    | &nbsp;
+                    | 至
+                    | &nbsp;
+                    code#calc-end -
+                    | &nbsp;
+                    | ，共请假
+                    | &nbsp;
+                    code#calc-day-off
+                    | &nbsp;
+                    | 天，共加班
+                    | &nbsp;
+                    code#calc-overtime
+                    | &nbsp;
+                    | 天。
+                    hr
+                    .form-inline
+                        select#users.form-control
+                        | &nbsp;
+                        button(onclick="user_switch();").btn.btn-primary 切换员工
+                        | &nbsp;
+                        button(onclick="user_create();").btn.btn-primary 创建新员工
+                        | &nbsp;
+                        button(onclick="user_delete();").btn.btn-danger 删除此员工
 

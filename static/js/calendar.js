@@ -1,6 +1,8 @@
 $(function () {
     auth_check();
     console.log("自动填满本年度所有双休日：fill_weekends(6,2017);fill_weekends(7,2017);");
+    var current_year = url_parameter("year");
+    if (is_empty(current_year)) url_redirect({year: moment().year()});
     for (var i in EVENT_CONF) {
         if (EVENT_CONF.hasOwnProperty(i)) {
             var event_css = event_render(EVENT_CONF[i]);
@@ -33,6 +35,7 @@ $(function () {
             enableContextMenu: true,
             enableRangeSelection: true,
             style: "custom",
+            startYear: current_year,
             customDataSourceRenderer: function (element, date, events) {
                 for (var i = 0; i < events.length; i++) {
                     var event = events[i];
@@ -100,7 +103,9 @@ $(function () {
                         }
                     });
                 }
-            }]
+            }], renderEnd: function (e) {
+                if (e.currentYear.toString() !== current_year.toString()) url_redirect({year: e.currentYear});
+            }
         });
     });
     $.get(API_SERVER + "users/", function (data) {
@@ -112,6 +117,7 @@ $(function () {
                 $("#user-name").html(user["name"]);
             }
         }
+        init_widget();
     });
 });
 
