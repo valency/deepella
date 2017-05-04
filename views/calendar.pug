@@ -29,7 +29,9 @@ html
                     hr
                     code#user-username -
                     | &nbsp;
-                    span#user-name 无
+                    span.text-danger#user-name 无
+                    | ，计算方式：
+                    span.text-danger#user-group -
                     | ，计算周期：
                     code#calc-start -
                     | &nbsp;
@@ -55,4 +57,8 @@ html
                         button(onclick="user_create();").btn.btn-primary 创建新员工
                         | &nbsp;
                         button(onclick="user_delete();").btn.btn-danger 删除此员工
+                        | &nbsp;
+                        input#periods.form-control
+                        | &nbsp;
+                        button(onclick="period_switch();").btn.btn-primary 切换年度
 

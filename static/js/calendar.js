@@ -3,14 +3,17 @@ $(function () {
     console.log("自动填满本年度所有双休日：fill_weekends(6,2017);fill_weekends(7,2017);");
     var current_year = url_parameter("year");
     if (is_empty(current_year)) url_redirect({year: moment().year()});
+    var current_period = url_parameter("period");
+    if (is_empty(current_period)) url_redirect({period: moment().year() - (moment().month() > 5 ? 0 : 1)});
+    $("#periods").val(current_period);
     for (var i in EVENT_CONF) {
         if (EVENT_CONF.hasOwnProperty(i)) {
             var event_css = event_render(EVENT_CONF[i]);
             $("#legend").append("<span style='" + event_css[0] + ":" + event_css[1] + ";'>" + EVENT_CONF[i]["name"] + "</span> ");
         }
     }
-    $("#calc-start").html(moment({year: moment().startOf("year").year() - 1, month: 6, day: 1}).format("YYYY-MM-DD"));
-    $("#calc-end").html(moment({year: moment().startOf("year").year(), month: 5, day: 30}).format("YYYY-MM-DD"));
+    $("#calc-start").html(moment({year: current_period, month: 6, day: 1}).format("YYYY-MM-DD"));
+    $("#calc-end").html(moment({year: parseInt(current_period) + 1, month: 5, day: 30}).format("YYYY-MM-DD"));
     var username = url_parameter("u");
     if (is_empty(username)) {
         username = "";
@@ -24,7 +27,9 @@ $(function () {
             data[i]["endDate"] = new Date(data[i]["endDate"]);
             if (data[i]["user"] === username) {
                 if (data[i]["type"] === "day_off") day_off++;
+                else if (data[i]["type"] === "day_off_half") day_off += 0.5;
                 else if (data[i]["type"] === "overtime") overtime++;
+                else if (data[i]["type"] === "overtime_half") overtime += 0.5;
             }
         }
         $("#calc-day-off").html(day_off);
@@ -60,23 +65,29 @@ $(function () {
                     message: html,
                     buttons: {
                         OK: function () {
-                            var event_type = $("#event_add_type").val();
-                            var event = {
-                                name: EVENT_CONF[event_type]["name"],
-                                startDate: e.startDate,
-                                endDate: e.endDate,
-                                type: event_type
-                            };
-                            if (EVENT_CONF[event_type]["user_mode"]) {
-                                if (is_empty(username)) {
-                                    bootbox.alert(warning_message("没有选择员工，请选择员工后再操作。"));
-                                } else {
-                                    event["user"] = username;
-                                    $.post(API_SERVER + "event/", event, function () {
-                                        location.reload();
-                                    });
-                                }
+                            if (is_empty(username)) {
+                                bootbox.alert(warning_message("没有选择员工，请选择员工后再操作。"));
                             } else {
+                                var event_group = null;
+                                for (var i in USER_GROUP) {
+                                    if (USER_GROUP.hasOwnProperty(i)) {
+                                        if (USER_GROUP[i]["name"] === $("#user-group").html()) {
+                                            event_group = i;
+                                            break;
+                                        }
+                                    }
+                                }
+                                var event_type = $("#event_add_type").val();
+                                var event = {
+                                    name: EVENT_CONF[event_type]["name"],
+                                    startDate: e.startDate,
+                                    endDate: e.endDate,
+                                    type: event_type,
+                                    group: event_group
+                                };
+                                if (EVENT_CONF[event_type]["user_mode"]) {
+                                    event["user"] = username;
+                                }
                                 $.post(API_SERVER + "event/", event, function () {
                                     location.reload();
                                 });
@@ -115,6 +126,7 @@ $(function () {
             if (username === user["username"]) {
                 $("#user-username").html(user["username"]);
                 $("#user-name").html(user["name"]);
+                $("#user-group").html(USER_GROUP[user["group"]]["name"]);
             }
         }
         init_widget();
@@ -136,12 +148,22 @@ function fill_weekends(weekday, year) {
                     var end = moment({year: year, month: 11, day: 31}).day(weekday);
                     var result = [];
                     var current = start.clone();
+                    var group = null;
+                    for (var i in USER_GROUP) {
+                        if (USER_GROUP.hasOwnProperty(i)) {
+                            if (USER_GROUP[i]["name"] === $("#user-group").html()) {
+                                group = i;
+                                break;
+                            }
+                        }
+                    }
                     while (current.isBefore(end)) {
                         result.push({
                             name: EVENT_CONF["holiday"]["name"],
                             startDate: current.clone(),
                             endDate: current.clone(),
-                            type: "holiday"
+                            type: "holiday",
+                            group: group
                         });
                         current = current.add(7, 'days');
                     }
@@ -164,6 +186,14 @@ function user_create() {
     html += "<input id='user-create-username' class='form-control' placeholder='员工用户名，命名规则为 jlzhou = 周婕纶'/>";
     html += "</div><div class='form-group'>";
     html += "<input id='user-create-name' class='form-control' placeholder='员工姓名'/>";
+    html += "</div><div class='form-group'>";
+    html += "<select id='user-create-group' class='form-control'>";
+    for (var i in USER_GROUP) {
+        if (USER_GROUP.hasOwnProperty(i)) {
+            html += "<option value='" + i + "'>" + USER_GROUP[i]["name"] + "（" + USER_GROUP[i]["hint"] + "）</option>";
+        }
+    }
+    html += "</select>";
     html += "</div>";
     bootbox.dialog({
         title: "创建新员工",
@@ -172,7 +202,8 @@ function user_create() {
             OK: function () {
                 var user = {
                     username: $("#user-create-username").val(),
-                    name: $("#user-create-name").val()
+                    name: $("#user-create-name").val(),
+                    group: $("#user-create-group").val()
                 };
                 $.post(API_SERVER + "user/", user, function () {
                     location.reload();
@@ -215,4 +246,9 @@ function user_delete() {
 function event_render(event_conf) {
     if (event_conf["style"] === "border") return ["box-shadow", event_conf["color"] + " 0 -4px 0 0 inset"];
     else if (event_conf["style"] === "background") return ["background", event_conf["color"]];
+}
+
+
+function period_switch() {
+    url_redirect({period: $("input#periods").val()})
 }

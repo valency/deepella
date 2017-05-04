@@ -7,35 +7,66 @@ const body_parser = require('body-parser');
 const sequelize = require('sequelize');
 const otpauth = require('otpauth');
 
+const debug = true;
+
 // Shared Functions
 function log(msg, color) {
     if (!color) color = colors.green;
     console.log(color('[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] ') + msg);
 }
 
-function event_add(req, d) {
+function event_all(where, callback) {
     Event.findAll({
-        where: {startDate: d}
+        where: where
     }).then(function (events) {
+        if (callback) callback(events);
+    });
+}
+
+function event_create(name, d, type, user, group) {
+    if (debug) log("New event: " + d + ", " + group);
+    Event.findAll({
+        where: {
+            startDate: d,
+            group: group,
+            user: {
+                $or: [user, null]
+            }
+        }
+    }).then(function (events) {
+        if (debug) log("# of events of the same day: " + events.length);
         if (events.length > 1) {
             return;
         } else if (events.length > 0) {
             var event = events[0];
-            if (event.type === "day_off" && req.body.type !== "holiday_as_workday") return;
-            else if (event.type === "overtime" && req.body.type !== "holiday") return;
-            else if (event.type === "holiday" && req.body.type !== "overtime") return;
-            else if (event.type === "holiday_as_workday" && req.body.type !== "day_off") return;
+            if (debug) log("Checking, event.type = " + event.type + ", type = " + type);
+            if ((event.type === "day_off" || event.type === "day_off_half") && type !== "holiday_as_workday") return;
+            else if ((event.type === "overtime" || event.type === "overtime_half") && type !== "holiday") return;
+            else if (event.type === "holiday" && (type !== "overtime" && type !== "overtime_half")) return;
+            else if (event.type === "holiday_as_workday" && (type !== "day_off" && type !== "day_off_half")) return;
         } else {
-            if (req.body.type === "overtime") return;
+            if (type === "overtime" || type === "overtime_half") return;
         }
+        if (debug) log("Event will be created.");
         Event.create({
-            name: req.body.name,
+            name: name,
             startDate: d,
             endDate: d,
-            type: req.body.type,
-            user: req.body.user
+            type: type,
+            user: user,
+            group: group
         });
     });
+}
+
+function event_add(req, d) {
+    if (req.body.group) {
+        event_create(req.body.name, d, req.body.type, req.body.user, req.body.group);
+    } else {
+        User.find({where: {username: req.body.user}}).then(function (user) {
+            event_create(req.body.name, d, req.body.type, user.username, user.group);
+        });
+    }
 }
 
 // Configurations
@@ -50,7 +81,8 @@ var db = new sequelize('deepella', null, null, {dialect: 'sqlite', storage: 'db.
 // Models
 var User = db.define('user', {
     username: {type: sequelize.STRING, primaryKey: true},
-    name: sequelize.STRING
+    name: sequelize.STRING,
+    group: sequelize.INTEGER // 1: Flexible, 2: Weekends only
 });
 
 var Event = db.define('event', {
@@ -59,7 +91,8 @@ var Event = db.define('event', {
     startDate: sequelize.DATE,
     endDate: sequelize.DATE,
     type: sequelize.STRING,
-    user: sequelize.STRING
+    user: sequelize.STRING,
+    group: sequelize.INTEGER // Same as User.group
 });
 
 // Views
@@ -98,20 +131,27 @@ app.delete('/api/user/', function (req, res) {
 
 app.get('/api/events/', function (req, res) {
     var where = {};
-    if (req.query.user) {
-        where["user"] = {$or: [req.query.user, null]};
-    }
     if (req.query.start) {
         where["startDate"] = {$gte: req.query.start};
     }
     if (req.query.end) {
         where["endDate"] = {$lte: req.query.end};
     }
-    Event.findAll({
-        where: where
-    }).then(function (events) {
-        res.send(events);
-    });
+    if (req.query.user) {
+        User.find({
+            where: {username: req.query.user}
+        }).then(function (user) {
+            where["user"] = {$or: [user.username, null]};
+            where["group"] = user.group;
+            event_all(where, function (events) {
+                res.send(events);
+            });
+        });
+    } else {
+        event_all(where, function (events) {
+            res.send(events);
+        });
+    }
 });
 
 app.post('/api/events/', function (req, res) {
