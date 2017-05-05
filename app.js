@@ -100,7 +100,7 @@ app.get('/api/auth/', function (req, res) {
     var totp = new otpauth.TOTP({
         'issuer': 'Deepera Co., Ltd.',
         'label': 'deepella@deepera.com',
-        'secret': otpauth.Secret.fromB32('ELLACHANBFF')
+        'secret': otpauth.Secret.fromB32('ELLACHANBFFK3PXP')
     });
     res.send({status: req.query.p === totp.generate()});
 });
