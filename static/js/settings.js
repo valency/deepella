@@ -2,12 +2,12 @@ const API_SERVER = "/deepella/api/";
 
 const EVENT_CONF = {
     day_off: {
-        name: "请假",
+        name: "请假（全天）",
         color: "#FCDB82",
         style: "background",
         user_mode: true
     }, overtime: {
-        name: "加班",
+        name: "加班（全天）",
         color: "#C9EE61",
         style: "background",
         user_mode: true
@@ -43,3 +43,5 @@ const USER_GROUP = {
         hint: "节假日仅限双休日"
     }
 };
+
+const EMOJI = ["╮(╯▽╰)╭", "!!!∑(ﾟДﾟノ)ノ", "o(´^｀)o", "(￣ェ￣;)", "〒▽〒", "ㄟ( ▔, ▔ )ㄏ", "_(:3」∠❀)_"];

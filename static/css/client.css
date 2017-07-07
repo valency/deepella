@@ -1,0 +1,16 @@
+.container {
+    width: 100%;
+    padding-top: 15px;
+}
+
+#legend span {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 5px 6px;
+    margin-top: 5px;
+}
+
+#periods {
+    width: 5em;
+    text-align: center;
+}

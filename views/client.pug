@@ -1,0 +1,60 @@
+html
+    head
+        title Deepella: Absence Management
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(type="text/css", rel="stylesheet", href="lib/bootstrap-3.3.7/css/bootstrap.min.css")
+        link(type="text/css", rel="stylesheet", href="lib/bootstrap-year-calendar-1.1.0/css/bootstrap-year-calendar.min.css")
+        link(type="text/css", rel="stylesheet", href="lib/font-awesome-4.7.0/css/font-awesome.min.css")
+        link(type="text/css", rel="stylesheet", href="css/deepella.css")
+        link(type="text/css", rel="stylesheet", href="css/index.css")
+        link(type="text/css", rel="stylesheet", href="css/client.css")
+        script(type="text/javascript", src="lib/jquery-3.2.1/jquery-3.2.1.min.js")
+        script(type="text/javascript", src="lib/bootstrap-3.3.7/js/bootstrap.min.js")
+        script(type="text/javascript", src="lib/bootstrap-year-calendar-1.1.0/js/bootstrap-year-calendar.js")
+        script(type="text/javascript", src="lib/bootbox-4.4.0/bootbox.min.js")
+        script(type="text/javascript", src="lib/moment-2.18.1/moment-with-locales.min.js")
+        script(type="text/javascript", src="lib/js.cookie-2.1.4/js.cookie-2.1.4.min.js")
+        script(type='text/javascript', src='lib/crypto-js-3.1.2/rollups/sha1.js')
+        script(type="text/javascript", src="js/settings.js")
+        script(type="text/javascript", src="js/common.js")
+        script(type="text/javascript", src="js/auth.js")
+        script(type="text/javascript", src="js/client.js")
+    body
+        .cssload-container
+            .cssload-whirlpool
+        .container.hidden
+            .row
+                #calc-desc.col-md-12
+                    p
+                        code#user-username -
+                        span.text-danger.pull-right#user-name 无
+                    p 计算方式：
+                        span.text-danger#user-group -
+                    p
+                        a(href='javascript:period_switch()') 计算周期
+                        | ：
+                        code#calc-start -
+                        | &nbsp;
+                        | 至
+                        | &nbsp;
+                        code#calc-end -
+                    p 共请假
+                        | &nbsp;
+                        code#calc-day-off
+                        | &nbsp;
+                        | 天
+                    p 共加班
+                        | &nbsp;
+                        code#calc-overtime
+                        | &nbsp;
+                        | 天
+                    hr
+            .row
+                .col-md-12
+                    #legend.text-center
+                    hr
+            .row
+                .col-md-12
+                    #calendar
+
+
