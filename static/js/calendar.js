@@ -4,7 +4,7 @@ $(function () {
     var current_year = url_parameter("year");
     if (is_empty(current_year)) url_redirect({year: moment().year()});
     var current_period = url_parameter("period");
-    if (is_empty(current_period)) url_redirect({period: moment().year() - (moment().month() > 5 ? 0 : 1)});
+    if (is_empty(current_period)) url_redirect({period: moment().year()});
     $("#periods").val(current_period);
     for (var i in EVENT_CONF) {
         if (EVENT_CONF.hasOwnProperty(i)) {
@@ -12,8 +12,8 @@ $(function () {
             $("#legend").append("<span style='" + event_css[0] + ":" + event_css[1] + ";'>" + EVENT_CONF[i]["name"] + "</span> ");
         }
     }
-    $("#calc-start").html(moment({year: current_period, month: 6, day: 1}).format("YYYY-MM-DD"));
-    $("#calc-end").html(moment({year: parseInt(current_period) + 1, month: 5, day: 30}).format("YYYY-MM-DD"));
+    $("#calc-start").html(moment({year: current_period, month: 0, day: 1}).format("YYYY-MM-DD"));
+    $("#calc-end").html(moment({year: current_period, month: 11, day: 31}).format("YYYY-MM-DD"));
     var username = url_parameter("u");
     if (is_empty(username)) {
         username = "";
