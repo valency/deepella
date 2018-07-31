@@ -205,7 +205,7 @@ app.get('*', function (req, res) {
 
 // Start
 db.sync().then(function () {
-    app.listen(9009, function () {
+    app.listen(9109, function () {
         log('Server started.');
     });
 });
