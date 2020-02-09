@@ -4,9 +4,9 @@
     "colors": "^1.1.2",
     "express": "^4.15.2",
     "moment": "^2.18.1",
+    "otpauth": "~2.2.0",
     "pug": "^2.0.0-beta.12",
-    "sequelize": "^3.30.4",
-    "sqlite3": "^3.1.8",
-    "otpauth": "~2.2.0"
+    "sequelize": "^4.44.3",
+    "sqlite3": "^3.1.8"
   }
 }
